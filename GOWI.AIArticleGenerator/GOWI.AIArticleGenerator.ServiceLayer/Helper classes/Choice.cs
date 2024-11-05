@@ -6,7 +6,7 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    public class Choices
+    public class Choice
     {
         public string Text { get; set; }
 

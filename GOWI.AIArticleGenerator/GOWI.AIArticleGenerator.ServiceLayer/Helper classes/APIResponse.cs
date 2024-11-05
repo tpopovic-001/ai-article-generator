@@ -8,6 +8,6 @@
 
     public class APIResponse
     {
-        public List<Choices> Choices { get; set; }
+        public List<Choice> Choices { get; set; }
     }
 }

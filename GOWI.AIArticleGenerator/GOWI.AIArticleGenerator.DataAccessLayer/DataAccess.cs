@@ -56,9 +56,6 @@
                                      ).ToList();
             }
 
-            _logger.LogInformation("Error happened during execution of the GetTransactions method at: {time}"
-                                                                                        , DateTimeOffset.Now);
-
             return await Task.FromResult(transactions);
         }
     }

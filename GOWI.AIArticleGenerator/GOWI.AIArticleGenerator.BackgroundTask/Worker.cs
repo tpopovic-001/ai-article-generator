@@ -3,7 +3,6 @@ namespace GOWI.AIArticleGenerator.BackgroundTask
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        private readonly string? _connStringReadCheck;
 
         public Worker(ILogger<Worker> logger, IConfiguration configuration)
         {
