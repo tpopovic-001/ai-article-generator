@@ -54,6 +54,7 @@
                                           CompanyName = company.Name,
                                       }
                                      ).ToList();
+                _logger.LogInformation("GetTransactions method: All statements are completed");
             }
 
             return await Task.FromResult(transactions);

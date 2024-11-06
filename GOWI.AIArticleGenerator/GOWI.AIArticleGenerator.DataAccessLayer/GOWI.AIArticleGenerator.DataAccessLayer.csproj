@@ -27,10 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Unit tests\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="GOWI.AIArticleGenerator.DomainLayer">
       <HintPath>..\GOWI.AIArticleGenerator.DomainLayer\bin\Debug\net8.0\GOWI.AIArticleGenerator.DomainLayer.dll</HintPath>
     </Reference>

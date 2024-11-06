@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.13.1" />
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
       <PrivateAssets>all</PrivateAssets>
@@ -15,6 +16,8 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.66.1" />
+    <PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.66.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -22,8 +25,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="GOWI.AIArticleGenerator.BusinessLogicLayer">
+      <HintPath>..\GOWI.AIArticleGenerator.BusinessLogicLayer\bin\Debug\net8.0\GOWI.AIArticleGenerator.BusinessLogicLayer.dll</HintPath>
+    </Reference>
     <Reference Include="GOWI.AIArticleGenerator.DataAccessLayer">
       <HintPath>..\GOWI.AIArticleGenerator.DataAccessLayer\bin\Debug\net8.0\GOWI.AIArticleGenerator.DataAccessLayer.dll</HintPath>
+    </Reference>
+    <Reference Include="GOWI.AIArticleGenerator.ServiceLayer">
+      <HintPath>..\GOWI.AIArticleGenerator.ServiceLayer\bin\Debug\net8.0\GOWI.AIArticleGenerator.ServiceLayer.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

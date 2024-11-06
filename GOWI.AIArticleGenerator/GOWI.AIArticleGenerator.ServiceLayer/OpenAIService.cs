@@ -10,45 +10,64 @@
     using GOWI.AIArticleGenerator.ServiceLayer.Helper_classes;
     using GOWI.AIArticleGenerator.ServiceLayer.Interfaces;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Identity.Client;
 
     public class OpenAIService : IOpenAIService
     {
-        private readonly HttpClient _httpClient;
         private readonly string _apiKey;
         private readonly ILogger<OpenAIService> _logger;
+        private readonly IMsalHttpClientFactory _httpClientFactory;
         private Converter _converter;
 
-
-        public OpenAIService(HttpClient httpClient, ILogger<OpenAIService> logger)
+        public OpenAIService(IMsalHttpClientFactory factory,
+                            ILogger<OpenAIService> logger)
         {
-            _httpClient = httpClient;
+            _httpClientFactory = factory;
             _apiKey = Environment.GetEnvironmentVariable("OPENAI_KEY");
             _logger = logger;
             _converter = Converter.ConverterInstance;
         }
 
-        public async Task<string> GenerateArticles(string prompt, List<DTOTransaction> transactions)
+        public async Task<string> GenerateArticles(string prompt,
+                                List<DTOTransaction> transactions)
         {
-            var serializedData = _converter.SerializeToJSON(transactions);
-            var completePrompt = $"Question: {prompt} Data for article creation: {serializedData}";
+            Task<APIResponse> deserializedData = null;
 
-            var request = new
+            try
             {
-                model = "gpt-3.5-turbo",
-                prompt = completePrompt,
-                max_tokens = 1024,
-            };
+                var serializedData = _converter.
+                                    SerializeToJSON(transactions);
+                var completePrompt = $"Prompt: {prompt} " +
+                                    $"Data: {serializedData}";
+                var request = new
+                {
+                    model = "gpt-3.5-turbo",
+                    prompt = completePrompt,
+                    max_tokens = 3000,
+                };
+                var httpClient = _httpClientFactory.GetHttpClient();
+                httpClient.DefaultRequestHeaders.Add("api-key",
+                            Environment.GetEnvironmentVariable("OPENAI_KEY"));
 
-            _httpClient.DefaultRequestHeaders.Add("api-key", _apiKey);
+                var response = await httpClient.PostAsJsonAsync(
+                        Environment.
+                        GetEnvironmentVariable("OPENAI_END_POINT")
+                                                        , request);
 
-            var response = await _httpClient.PostAsJsonAsync(
-                    Environment.GetEnvironmentVariable("OPENAI_END_POINT")
-                                                                , request);
+                var jsonResponse = await response.Content.
+                                        ReadAsStringAsync();
+                deserializedData = _converter.DeserializeJSON(jsonResponse);
 
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-            var deserializedData = _converter.DeserializeJSON(jsonResponse);
-            _logger.LogInformation("All statements inside of GenerateArticles method" +
-                                    "have been executed!");
+                _logger.LogInformation(
+                    "OpenAIService GenerateArticles method " +
+                    "completed successfully!");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    "OpenAIService GenerateArticles method error: {error}",
+                    ex.Message);
+            }
 
             return deserializedData.Result.Choices.First().Text;
         }

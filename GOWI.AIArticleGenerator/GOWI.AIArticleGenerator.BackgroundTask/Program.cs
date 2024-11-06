@@ -15,7 +15,6 @@ namespace GOWI.AIArticleGenerator.BackgroundTask
             builder.Configuration.AddEnvironmentVariables();
             builder.Services.AddDbContext<DevAfjPp18032024Context>(options =>
                 options.UseSqlServer(Environment.GetEnvironmentVariable("CONNECTION_STRING")));
-
             var host = builder.Build();
             host.Run();
         }

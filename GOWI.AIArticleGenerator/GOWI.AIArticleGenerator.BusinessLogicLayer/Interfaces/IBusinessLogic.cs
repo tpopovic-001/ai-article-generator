@@ -5,9 +5,10 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using GOWI.AIArticleGenerator.ServiceLayer.Helper_classes;
 
     public interface IBusinessLogic
     {
-
+        Task<string> GetArticles();
     }
 }

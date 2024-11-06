@@ -12,7 +12,6 @@
     using Moq;
     using NUnit.Framework;
 
-
     [TestFixture]
     public class ServiceLayerTest
     {
@@ -56,7 +55,7 @@
                 DraftedOn = DateTime.Now,
                 SelectedCurrency = "USD",
                 TrancheName = "$400.000.000 3.375% Senior Notes due 2026",
-                TrancheValue = Convert.ToDecimal(1200.00000),
+                TrancheValue = Convert.ToDecimal(400.00000),
                 CompanyName = "Barclays",
             };
 
@@ -65,7 +64,8 @@
             testList.Add(transactionObjectTwo);
 
             // act
-            var actualResult = await _converterMock.Object.SerializeToJSON(testList);
+            var actualResult = await _converterMock.Object.
+                                        SerializeToJSON(testList);
 
             // assert
             Assert.That(actualResult, Is.InstanceOf<Task<string>>());
@@ -96,7 +96,8 @@
             var testJSONResponse = JsonSerializer.Serialize(testList);
 
             // act
-            var actualResult = await _converterMock.Object.DeserializeJSON(testJSONResponse);
+            var actualResult = await _converterMock.Object.
+                                    DeserializeJSON(testJSONResponse);
 
             // assert
             Assert.That(actualResult, Is.InstanceOf<Task<APIResponse>>());
@@ -125,18 +126,21 @@
                 DraftedOn = DateTime.Now,
                 SelectedCurrency = "USD",
                 TrancheName = "$400.000.000 3.375% Senior Notes due 2026",
-                TrancheValue = Convert.ToDecimal(1200.00000),
+                TrancheValue = Convert.ToDecimal(400.00000),
                 CompanyName = "Barclays",
             };
 
             var testList = new List<DTOTransaction>();
             testList.Add(transactionObjectOne);
             testList.Add(transactionObjectTwo);
-            var testPrompt = "Based on this JSON transaction data,I want you to create articles with " +
-                "Article title, short description and Full description for each object.";
+            string testPrompt = "Generate an article for each transaction." +
+                            "It must be created in this manner: title, " +
+                            "short description," +
+                            " and full description!";
 
             // act
-            var actualResult = _openAIServiceMock.Object.GenerateArticles(testPrompt, testList);
+            var actualResult = await _openAIServiceMock.Object.
+                                GenerateArticles(testPrompt, testList);
 
             // assert
             Assert.That(actualResult, Is.InstanceOf<Task<string>>());
