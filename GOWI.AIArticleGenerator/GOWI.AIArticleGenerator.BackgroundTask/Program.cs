@@ -4,6 +4,7 @@ namespace GOWI.AIArticleGenerator.BackgroundTask
     using GOWI.AIArticleGenerator.BackgroundTask;
     using GOWI.AIArticleGenerator.BackgroundTask.Entities.Context;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Http;
 
     public class Program()
     {
@@ -11,6 +12,7 @@ namespace GOWI.AIArticleGenerator.BackgroundTask
         {
             Env.Load("./.env.env");
             var builder = Host.CreateApplicationBuilder(args);
+            builder.Services.AddHttpClient();
             builder.Services.AddHostedService<Worker>();
             builder.Configuration.AddEnvironmentVariables();
             builder.Services.AddDbContext<DevAfjPp18032024Context>(options =>

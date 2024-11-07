@@ -5,9 +5,8 @@
     using GOWI.AIArticleGenerator.DomainLayer.DTOs;
     using GOWI.AIArticleGenerator.ServiceLayer;
     using GOWI.AIArticleGenerator.ServiceLayer.Helper_classes;
+    using Microsoft.Extensions.Http;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Identity.Client;
-
 
     public class BusinessLogic : IBusinessLogic
     {
@@ -16,36 +15,53 @@
         private readonly ILogger<OpenAIService> _serviceLayerlogger;
         private DataAccess _dataAccess;
         private OpenAIService _openAIService;
-        private IMsalHttpClientFactory _httpClientFactory;
+        private IHttpClientFactory _httpClientFactory;
+        private List<string> _apiResponse;
 
         public BusinessLogic(ILogger<BusinessLogic> logger,
                             ILogger<DataAccess> loggerDAL,
                             ILogger<OpenAIService> loggerSL,
-                            IMsalHttpClientFactory factory)
+                            IHttpClientFactory clientFactory
+                           )
         {
             _logger = logger;
             _dataAccessLogger = loggerDAL;
             _serviceLayerlogger = loggerSL;
-            _httpClientFactory = factory;
+            _httpClientFactory = clientFactory;
         }
 
-        public async Task<string> GetArticles()
+        public async Task<List<string>> GetArticles()
         {
-            _dataAccess = new DataAccess(_dataAccessLogger);
-            var transactionData = await _dataAccess.GetTransactions();
+            try
+            {
+                string prompt = "You are professional journalist. Make an article in format: title," +
+                    "short description, full description. Here's the data to work with: ";
 
-            string prompt = "Generate an article for each transaction." +
-                            "It must be created in this manner: title, " +
-                            "short description," +
-                            " and full description!";
+                _dataAccess = new DataAccess(_dataAccessLogger);
+                _openAIService = new OpenAIService(_httpClientFactory,
+                                    _serviceLayerlogger);
 
-            _openAIService = new OpenAIService(_httpClientFactory,
-                                                _serviceLayerlogger);
+                var transactions = await _dataAccess.GetTransactions();
+                _apiResponse = new List<string>();
 
-            var generatedArticles = await _openAIService.GenerateArticles
-                                                    (prompt, transactionData);
+                foreach (var transaction in transactions)
+                {
+                    var generatedArticle = await _openAIService.GenerateArticle
+                                    (prompt, transaction);
 
-            return await Task.FromResult(generatedArticles);
+                    _apiResponse.Add(generatedArticle);
+                }
+
+                _logger.LogInformation("BusinessLogic GetArticles method executed successfully " +
+                    "at: {time}", DateTimeOffset.Now);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error happened inside of BusinessLogic GetArticles method at: {time}." +
+                                "Error message: {error}", DateTimeOffset.Now, ex.Message);
+            }
+
+            return await Task.FromResult(_apiResponse);
         }
     }
 }

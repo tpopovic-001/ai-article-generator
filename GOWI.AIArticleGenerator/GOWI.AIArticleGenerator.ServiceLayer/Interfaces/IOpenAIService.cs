@@ -7,9 +7,10 @@
     using System.Text;
     using System.Threading.Tasks;
     using GOWI.AIArticleGenerator.DomainLayer.DTOs;
+    using GOWI.AIArticleGenerator.ServiceLayer.Helper_classes;
 
     public interface IOpenAIService
     {
-        Task<string> GenerateArticles(string prompt, List<DTOTransaction> transactions);
+        Task<string> GenerateArticle(string prompt, DTOTransaction transaction);
     }
 }

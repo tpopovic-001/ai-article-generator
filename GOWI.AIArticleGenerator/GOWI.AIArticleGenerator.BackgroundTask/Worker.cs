@@ -3,8 +3,8 @@ namespace GOWI.AIArticleGenerator.BackgroundTask
     using GOWI.AIArticleGenerator.BusinessLogicLayer;
     using GOWI.AIArticleGenerator.DataAccessLayer;
     using GOWI.AIArticleGenerator.ServiceLayer;
+    using Microsoft.Extensions.Http;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Identity.Client;
 
     public class Worker : BackgroundService
     {
@@ -12,21 +12,21 @@ namespace GOWI.AIArticleGenerator.BackgroundTask
         private readonly ILogger<BusinessLogic> _businessLogicLogger;
         private ILogger<DataAccess> _dataAccessLogger;
         private readonly ILogger<OpenAIService> _serviceLayerlogger;
-        private IMsalHttpClientFactory _httpClientFactory;
         private BusinessLogic _businessLogic;
+        private IHttpClientFactory _httpClientFactory;
 
         public Worker(ILogger<Worker> logger,
                       ILogger<BusinessLogic> loggerBLL,
                       ILogger<DataAccess> loggerDAL,
                       ILogger<OpenAIService> loggerSL,
-                      IMsalHttpClientFactory factory)
+                      IHttpClientFactory clientFactory)
 
         {
             _logger = logger;
             _businessLogicLogger = loggerBLL;
             _dataAccessLogger = loggerDAL;
             _serviceLayerlogger = loggerSL;
-            _httpClientFactory = factory;
+            _httpClientFactory = clientFactory;
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
@@ -34,7 +34,8 @@ namespace GOWI.AIArticleGenerator.BackgroundTask
             _businessLogic = new BusinessLogic(_businessLogicLogger,
                                                 _dataAccessLogger,
                                                 _serviceLayerlogger,
-                                                _httpClientFactory);
+                                                _httpClientFactory
+                                                );
 
             return base.StartAsync(cancellationToken);
         }
@@ -56,15 +57,18 @@ namespace GOWI.AIArticleGenerator.BackgroundTask
                     var generatedArticles = await _businessLogic.
                                                             GetArticles();
                     _logger.LogInformation(
-                                "Generated articles data: {articles}",
-                                generatedArticles);
+                                "Worker ExecuteAsync method executed successfully at: {time}, " +
+                                "Generated articles: {articles}" + Environment.NewLine,
+                                DateTimeOffset.Now, generatedArticles);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex.Message);
+                    _logger.LogError(
+                        "Error happened inside of Worker ExecuteAsync method at: {time}. Error message: {error}",
+                        DateTimeOffset.Now, ex.Message);
                 }
 
-                await Task.Delay(6000, stoppingToken);
+                await Task.Delay(1000, stoppingToken);
             }
         }
     }

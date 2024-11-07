@@ -35,7 +35,7 @@
         [Test]
         public async Task SerializeToJSONTest()
         {
-            var transactionObjectOne = new DTOTransaction
+            var transactionObject = new DTOTransaction
             {
                 Name = "Air Serbia |11-01|$1.2m",
                 Value = Convert.ToDecimal(1200.00000),
@@ -47,25 +47,9 @@
                 CompanyName = "Barclays",
             };
 
-            var transactionObjectTwo = new DTOTransaction
-            {
-                Name = "Air Serbia |11-05|$4m",
-                Value = Convert.ToDecimal(400.00000),
-                Description = "<p>No description</p>",
-                DraftedOn = DateTime.Now,
-                SelectedCurrency = "USD",
-                TrancheName = "$400.000.000 3.375% Senior Notes due 2026",
-                TrancheValue = Convert.ToDecimal(400.00000),
-                CompanyName = "Barclays",
-            };
-
-            var testList = new List<DTOTransaction>();
-            testList.Add(transactionObjectOne);
-            testList.Add(transactionObjectTwo);
-
             // act
             var actualResult = await _converterMock.Object.
-                                        SerializeToJSON(testList);
+                                        SerializeToJSON(transactionObject);
 
             // assert
             Assert.That(actualResult, Is.InstanceOf<Task<string>>());
@@ -74,7 +58,7 @@
         [Test]
         public async Task DeserializeJSONTest()
         {
-            var choiceOne = new Choice
+            var choiceObject = new Choice
             {
                 Text = "answer 1",
                 Index = 0,
@@ -82,31 +66,20 @@
                 FinishReason = "stop",
             };
 
-            var choiceTwo = new Choice
-            {
-                Text = "answer 2",
-                Index = 1,
-                Logprobs = null,
-                FinishReason = "length",
-            };
-
-            var testList = new List<Choice>();
-            testList.Add(choiceOne);
-            testList.Add(choiceTwo);
-            var testJSONResponse = JsonSerializer.Serialize(testList);
+            var testJSONResponse = JsonSerializer.Serialize(choiceObject);
 
             // act
             var actualResult = await _converterMock.Object.
                                     DeserializeJSON(testJSONResponse);
 
             // assert
-            Assert.That(actualResult, Is.InstanceOf<Task<APIResponse>>());
+            Assert.That(actualResult, Is.InstanceOf<Task<Choice>>());
         }
 
         [Test]
-        public async Task GenerateArticlesTest()
+        public async Task GenerateArticleTest()
         {
-            var transactionObjectOne = new DTOTransaction
+            var transactionObject = new DTOTransaction
             {
                 Name = "Air Serbia |11-01|$1.2m",
                 Value = Convert.ToDecimal(1200.00000),
@@ -118,32 +91,15 @@
                 CompanyName = "Barclays",
             };
 
-            var transactionObjectTwo = new DTOTransaction
-            {
-                Name = "Air Serbia |11-05|$4m",
-                Value = Convert.ToDecimal(400.00000),
-                Description = "<p>No description</p>",
-                DraftedOn = DateTime.Now,
-                SelectedCurrency = "USD",
-                TrancheName = "$400.000.000 3.375% Senior Notes due 2026",
-                TrancheValue = Convert.ToDecimal(400.00000),
-                CompanyName = "Barclays",
-            };
-
-            var testList = new List<DTOTransaction>();
-            testList.Add(transactionObjectOne);
-            testList.Add(transactionObjectTwo);
-            string testPrompt = "Generate an article for each transaction." +
-                            "It must be created in this manner: title, " +
-                            "short description," +
-                            " and full description!";
+            string testPrompt = "You are professional journalist. Make an article in format: title," +
+                    "short description, full description. Here's the data to work with: ";
 
             // act
             var actualResult = await _openAIServiceMock.Object.
-                                GenerateArticles(testPrompt, testList);
+                                GenerateArticle(testPrompt, transactionObject);
 
             // assert
-            Assert.That(actualResult, Is.InstanceOf<Task<string>>());
+            Assert.That(actualResult, Is.InstanceOf<Task<Choice>>());
         }
     }
 }

@@ -6,6 +6,7 @@
     using System.Text;
     using System.Threading.Tasks;
     using GOWI.AIArticleGenerator.BusinessLogicLayer.Interfaces;
+    using GOWI.AIArticleGenerator.ServiceLayer.Helper_classes;
     using Moq;
     using NUnit.Framework;
 
@@ -33,7 +34,7 @@
             var actualResult = await _businessLogicMock.Object.GetArticles();
 
             // assert
-            Assert.That(actualResult, Is.TypeOf<Task<string>>());
+            Assert.That(actualResult, Is.TypeOf<Task<List<Choice>>>());
         }
     }
 }
