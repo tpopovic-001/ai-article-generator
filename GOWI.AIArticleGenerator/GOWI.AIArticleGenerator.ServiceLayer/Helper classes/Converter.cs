@@ -27,14 +27,14 @@
             }
         }
 
-        public async Task<string> SerializeToJSON(DTOTransaction data)
+        public string SerializeToJSON(DTOTransaction data)
         {
-            return await Task.FromResult(JsonSerializer.Serialize(data));
+            return JsonSerializer.Serialize(data);
         }
 
-        public async Task<string> DeserializeJSON(string json)
+        public APIResponse DeserializeJSON(string json)
         {
-            return await Task.FromResult(JsonSerializer.Deserialize<string>(json));
+            return JsonSerializer.Deserialize<APIResponse>(json);
         }
     }
 }

@@ -9,6 +9,6 @@
 
     public interface IBusinessLogic
     {
-        Task<List<string>> GetArticles();
+        Task<List<Choice>> GetArticles();
     }
 }

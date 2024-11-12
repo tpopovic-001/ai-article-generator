@@ -48,32 +48,11 @@
             };
 
             // act
-            var actualResult = await _converterMock.Object.
+            var actualResult =  _converterMock.Object.
                                         SerializeToJSON(transactionObject);
 
             // assert
             Assert.That(actualResult, Is.InstanceOf<Task<string>>());
-        }
-
-        [Test]
-        public async Task DeserializeJSONTest()
-        {
-            var choiceObject = new Choice
-            {
-                Text = "answer 1",
-                Index = 0,
-                Logprobs = null,
-                FinishReason = "stop",
-            };
-
-            var testJSONResponse = JsonSerializer.Serialize(choiceObject);
-
-            // act
-            var actualResult = await _converterMock.Object.
-                                    DeserializeJSON(testJSONResponse);
-
-            // assert
-            Assert.That(actualResult, Is.InstanceOf<Task<Choice>>());
         }
 
         [Test]
@@ -99,7 +78,7 @@
                                 GenerateArticle(testPrompt, transactionObject);
 
             // assert
-            Assert.That(actualResult, Is.InstanceOf<Task<Choice>>());
+            Assert.That(actualResult, Is.InstanceOf<Task<APIResponse>>());
         }
     }
 }

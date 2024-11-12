@@ -15,5 +15,7 @@
         public string ShortDescription { get; set; }
 
         public string FullDescription { get; set; }
+
+        public int TransactionId { get; set; }
     }
 }

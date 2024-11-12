@@ -50,6 +50,7 @@
                                           company => company.CompanyId,
                                           (temp, company) => new DTOTransaction
                                           {
+                                              TransactionId = temp.transaction.TransactionId,
                                               Name = temp.transaction.Name,
                                               Value = temp.transaction.Value,
                                               Description = temp.transaction.Description,

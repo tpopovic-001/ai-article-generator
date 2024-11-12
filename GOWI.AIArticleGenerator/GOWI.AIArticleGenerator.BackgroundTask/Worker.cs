@@ -56,10 +56,12 @@ namespace GOWI.AIArticleGenerator.BackgroundTask
                 {
                     var generatedArticles = await _businessLogic.
                                                             GetArticles();
+
+                    var formattedArticles = await _businessLogic.
+                                                       FormatArticles(generatedArticles);
                     _logger.LogInformation(
-                                "Worker ExecuteAsync method executed successfully at: {time}, " +
-                                "Generated articles: {articles}" + Environment.NewLine,
-                                DateTimeOffset.Now, generatedArticles);
+                        "Worker ExecuteAsync method executed successfully at: {time}",
+                        DateTimeOffset.Now);
                 }
                 catch (Exception ex)
                 {
@@ -68,7 +70,7 @@ namespace GOWI.AIArticleGenerator.BackgroundTask
                         DateTimeOffset.Now, ex.Message);
                 }
 
-                await Task.Delay(1000, stoppingToken);
+                await Task.Delay(0, stoppingToken);
             }
         }
     }

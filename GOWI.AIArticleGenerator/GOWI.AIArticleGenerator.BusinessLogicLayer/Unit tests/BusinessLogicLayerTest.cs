@@ -34,7 +34,7 @@
             var actualResult = await _businessLogicMock.Object.GetArticles();
 
             // assert
-            Assert.That(actualResult, Is.TypeOf<Task<List<Choice>>>());
+            Assert.That(actualResult, Is.TypeOf<Task<List<APIResponse>>>());
         }
     }
 }

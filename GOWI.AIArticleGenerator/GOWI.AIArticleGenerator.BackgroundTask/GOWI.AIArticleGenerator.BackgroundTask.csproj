@@ -29,6 +29,9 @@
     <Reference Include="GOWI.AIArticleGenerator.DataAccessLayer">
       <HintPath>..\GOWI.AIArticleGenerator.DataAccessLayer\bin\Debug\net8.0\GOWI.AIArticleGenerator.DataAccessLayer.dll</HintPath>
     </Reference>
+    <Reference Include="GOWI.AIArticleGenerator.DomainLayer">
+      <HintPath>..\GOWI.AIArticleGenerator.DomainLayer\bin\Debug\net8.0\GOWI.AIArticleGenerator.DomainLayer.dll</HintPath>
+    </Reference>
     <Reference Include="GOWI.AIArticleGenerator.ServiceLayer">
       <HintPath>..\GOWI.AIArticleGenerator.ServiceLayer\bin\Debug\net8.0\GOWI.AIArticleGenerator.ServiceLayer.dll</HintPath>
     </Reference>

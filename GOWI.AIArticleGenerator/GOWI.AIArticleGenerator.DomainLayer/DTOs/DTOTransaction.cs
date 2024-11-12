@@ -8,6 +8,8 @@
 
     public class DTOTransaction
     {
+        public int TransactionId { get; set; }
+
         public string? Name { get; set; }
 
         public decimal? Value { get; set; }

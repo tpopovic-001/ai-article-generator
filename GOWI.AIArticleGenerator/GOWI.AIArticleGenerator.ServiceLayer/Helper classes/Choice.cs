@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    using System.Text.Json;
     using System.Text.Json.Serialization;
     using System.Threading.Tasks;
 
@@ -21,5 +20,7 @@
 
         [JsonPropertyName("finish_reason")]
         public string FinishReason { get; set; }
+
+        public int TransactionId { get; set; }
     }
 }

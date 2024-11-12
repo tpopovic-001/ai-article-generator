@@ -10,8 +10,8 @@
 
     public interface IConverter
     {
-       Task<string> SerializeToJSON(DTOTransaction data);
+       string SerializeToJSON(DTOTransaction data);
 
-       Task<string> DeserializeJSON(string json);
+       APIResponse DeserializeJSON(string json);
     }
 }

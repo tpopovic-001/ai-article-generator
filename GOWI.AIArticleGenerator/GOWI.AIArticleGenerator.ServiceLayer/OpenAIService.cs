@@ -18,7 +18,7 @@
         private readonly ILogger<OpenAIService> _logger;
         private Converter _converter;
         private IHttpClientFactory _httpClientFactory;
-        private string _deserializedArticle;
+        private APIResponse _generatedArticle;
 
         public OpenAIService(IHttpClientFactory clientFactory,
                             ILogger<OpenAIService> logger)
@@ -29,19 +29,19 @@
             _converter = Converter.ConverterInstance;
         }
 
-        public async Task<string> GenerateArticle(string prompt, DTOTransaction transaction)
+        public async Task<APIResponse> GenerateArticle(string prompt, DTOTransaction transaction)
         {
             try
             {
-                var serializedTransaction = await _converter.SerializeToJSON(transaction);
+                var serializedTransaction = _converter.SerializeToJSON(transaction);
 
                 var completePrompt = $"Prompt: {prompt}. " +
-                                    $"Data: {serializedTransaction}";
+                                    $"Here's the data: {serializedTransaction}";
                 var request = new
                 {
                     model = "gpt-3.5-turbo",
                     prompt = completePrompt,
-                    max_tokens = 500,
+                    max_tokens = 700,
                 };
                 var httpClient = _httpClientFactory.CreateClient();
                 httpClient.DefaultRequestHeaders.Add("api-key", _apiKey);
@@ -54,7 +54,7 @@
                 var jsonResponse = await response.Content.
                                         ReadAsStringAsync();
 
-                _deserializedArticle = jsonResponse;
+                _generatedArticle = _converter.DeserializeJSON(jsonResponse);
 
                 _logger.LogInformation(
                     "OpenAIService GenerateArticles method executed successfully at: {time}",
@@ -68,7 +68,7 @@
                 DateTimeOffset.Now, ex.Message);
             }
 
-            return await Task.FromResult(_deserializedArticle);
+            return await Task.FromResult(_generatedArticle);
         }
     }
 }
