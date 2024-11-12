@@ -61,8 +61,6 @@ public partial class Company
 
     public string? IcaoCode { get; set; }
 
-    public virtual CompanyType CompanyType { get; set; } = null!;
-
     public virtual ICollection<Company> InverseLeagueTableAccreditationCompany { get; set; } = new List<Company>();
 
     public virtual Company? LeagueTableAccreditationCompany { get; set; }

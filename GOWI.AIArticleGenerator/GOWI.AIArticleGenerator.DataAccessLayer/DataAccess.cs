@@ -14,10 +14,12 @@
     public class DataAccess : IDataAccess
     {
         private readonly ILogger<DataAccess> _logger;
+        private readonly Mapper _mapper;
 
         public DataAccess(ILogger<DataAccess> logger)
         {
             _logger = logger;
+            _mapper = Mapper.MapperInstance;
         }
 
         public async Task<List<DTOTransaction>> GetTransactions()
@@ -71,6 +73,28 @@
                 "Error message: {error}", DateTimeOffset.Now, ex.Message);
             }
             return await Task.FromResult(transactions);
+        }
+
+        public async void SaveFormattedArticles(List<DTOArticle> articles)
+        {
+            try
+            {
+                var mappedArticles = await _mapper.MapFromDTOToEntity(articles);
+
+                using (var connection = new DevAfjPp18032024Context())
+                {
+                    await connection.ArticlesTeodorPopovics.AddRangeAsync(mappedArticles);
+                }
+
+                _logger.LogInformation("DataAccess SaveFormattedArticles method executed " +
+                        "successfully at: {time}", DateTimeOffset.Now);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error happened inside of DataAccess SaveFormattedArticles method at: {time}." +
+                "Error message: {error}", DateTimeOffset.Now, ex.Message);
+
+            }
         }
     }
 }

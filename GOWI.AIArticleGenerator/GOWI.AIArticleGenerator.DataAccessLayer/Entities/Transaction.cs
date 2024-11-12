@@ -135,13 +135,7 @@ public partial class Transaction
 
     public DateTime? LeaseEndDate { get; set; }
 
-    public virtual ProductCategory? ProductCategory { get; set; }
-
-    public virtual ProductType? ProductType { get; set; }
+    public virtual ICollection<ArticlesTeodorPopovic> ArticlesTeodorPopovics { get; set; } = new List<ArticlesTeodorPopovic>();
 
     public virtual ICollection<Tranch> Tranches { get; set; } = new List<Tranch>();
-
-    public virtual TransactionInstrumentType? TransactionInstrumentType { get; set; }
-
-    public virtual TransactionStage? TransactionStage { get; set; }
 }

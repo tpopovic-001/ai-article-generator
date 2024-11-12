@@ -1,9 +1,9 @@
 ﻿namespace GOWI.AIArticleGenerator.BackgroundTask.Entities.Context;
+using System;
+using System.Collections.Generic;
+using GOWI.AIArticleGenerator.BackgroundTask.Entities;
+using Microsoft.EntityFrameworkCore;
 
-    using System;
-    using System.Collections.Generic;
-    using GOWI.AIArticleGenerator.BackgroundTask.Entities;
-    using Microsoft.EntityFrameworkCore;
 public partial class DevAfjPp18032024Context : DbContext
 {
     public DevAfjPp18032024Context()
@@ -15,15 +15,11 @@ public partial class DevAfjPp18032024Context : DbContext
     {
     }
 
+    public virtual DbSet<ArticlesTeodorPopovic> ArticlesTeodorPopovics { get; set; }
+
     public virtual DbSet<Company> Companies { get; set; }
 
     public virtual DbSet<Company1> Companies1 { get; set; }
-
-    public virtual DbSet<CompanyType> CompanyTypes { get; set; }
-
-    public virtual DbSet<ProductCategory> ProductCategories { get; set; }
-
-    public virtual DbSet<ProductType> ProductTypes { get; set; }
 
     public virtual DbSet<Tranch> Tranches { get; set; }
 
@@ -31,16 +27,26 @@ public partial class DevAfjPp18032024Context : DbContext
 
     public virtual DbSet<Transaction> Transactions { get; set; }
 
-    public virtual DbSet<TransactionInstrumentType> TransactionInstrumentTypes { get; set; }
-
-    public virtual DbSet<TransactionStage> TransactionStages { get; set; }
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable("CONNECTION_STRING"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.UseCollation("Latin1_General_CI_AS");
+
+        modelBuilder.Entity<ArticlesTeodorPopovic>(entity =>
+        {
+            entity.HasKey(e => e.ArticleId).HasName("PK__Articles__9C6270E87A2AC021");
+
+            entity.ToTable("Articles_TeodorPopovic");
+
+            entity.Property(e => e.ShortDescription).HasMaxLength(400);
+            entity.Property(e => e.Title).HasMaxLength(200);
+
+            entity.HasOne(d => d.Transaction).WithMany(p => p.ArticlesTeodorPopovics)
+                .HasForeignKey(d => d.TransactionId)
+                .HasConstraintName("FK__Articles___Trans__7BCBC157");
+        });
 
         modelBuilder.Entity<Company>(entity =>
         {
@@ -76,11 +82,6 @@ public partial class DevAfjPp18032024Context : DbContext
             entity.Property(e => e.WebAddress).HasMaxLength(500);
             entity.Property(e => e.YouTube).HasMaxLength(500);
 
-            entity.HasOne(d => d.CompanyType).WithMany(p => p.Companies)
-                .HasForeignKey(d => d.CompanyTypeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK2C073D856669B19A");
-
             entity.HasOne(d => d.LeagueTableAccreditationCompany).WithMany(p => p.InverseLeagueTableAccreditationCompany)
                 .HasForeignKey(d => d.LeagueTableAccreditationCompanyId)
                 .HasConstraintName("FK2C073D85603871C3");
@@ -106,35 +107,6 @@ public partial class DevAfjPp18032024Context : DbContext
             entity.Property(e => e.Slug).HasMaxLength(128);
             entity.Property(e => e.StartDate).HasColumnType("datetime");
             entity.Property(e => e.WebSite).HasMaxLength(225);
-        });
-
-        modelBuilder.Entity<CompanyType>(entity =>
-        {
-            entity.HasKey(e => e.CompanyTypeId).HasName("PK__CompanyTypes__2DB35E9C");
-
-            entity.Property(e => e.Name).HasMaxLength(256);
-        });
-
-        modelBuilder.Entity<ProductCategory>(entity =>
-        {
-            entity.HasKey(e => e.ProductCategoryId).HasName("PK_TransactionCategory");
-
-            entity.ToTable("ProductCategory");
-
-            entity.Property(e => e.ProductCategoryId).HasColumnName("ProductCategoryID");
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-        });
-
-        modelBuilder.Entity<ProductType>(entity =>
-        {
-            entity.HasKey(e => e.ProductTypeId).HasName("PK_ProductType");
-
-            entity.Property(e => e.ProductTypeId).HasColumnName("ProductTypeID");
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .IsUnicode(false);
         });
 
         modelBuilder.Entity<Tranch>(entity =>
@@ -301,41 +273,6 @@ public partial class DevAfjPp18032024Context : DbContext
             entity.Property(e => e.TransactionInstrumentTypeId).HasColumnName("TransactionInstrumentTypeID");
             entity.Property(e => e.UnpublishedOn).HasColumnType("datetime");
             entity.Property(e => e.Value).HasColumnType("decimal(19, 5)");
-
-            entity.HasOne(d => d.ProductCategory).WithMany(p => p.Transactions)
-                .HasForeignKey(d => d.ProductCategoryId)
-                .HasConstraintName("FK_Transactions_ProductCategory");
-
-            entity.HasOne(d => d.ProductType).WithMany(p => p.Transactions)
-                .HasForeignKey(d => d.ProductTypeId)
-                .HasConstraintName("FK_Transactions_FinanceTypes");
-
-            entity.HasOne(d => d.TransactionInstrumentType).WithMany(p => p.Transactions)
-                .HasForeignKey(d => d.TransactionInstrumentTypeId)
-                .HasConstraintName("FK_Transactions_TransactionInstrumentType");
-
-            entity.HasOne(d => d.TransactionStage).WithMany(p => p.Transactions)
-                .HasForeignKey(d => d.TransactionStageId)
-                .HasConstraintName("FK2045D237D1F6D387");
-        });
-
-        modelBuilder.Entity<TransactionInstrumentType>(entity =>
-        {
-            entity.HasKey(e => e.TransactionInstrumentTypeId).HasName("PK_DealInstrumentType");
-
-            entity.ToTable("TransactionInstrumentType");
-
-            entity.Property(e => e.TransactionInstrumentTypeId).HasColumnName("TransactionInstrumentTypeID");
-            entity.Property(e => e.TransactionInstrumentTypeName)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-        });
-
-        modelBuilder.Entity<TransactionStage>(entity =>
-        {
-            entity.HasKey(e => e.TransactionStageId).HasName("PK__Transact__46090D8D2F650636");
-
-            entity.Property(e => e.Name).HasMaxLength(255);
         });
 
         OnModelCreatingPartial(modelBuilder);
