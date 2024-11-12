@@ -59,6 +59,11 @@ namespace GOWI.AIArticleGenerator.BackgroundTask
 
                     var formattedArticles = await _businessLogic.
                                                        FormatArticles(generatedArticles);
+                    if (formattedArticles.Count != 0)
+                    {
+                        _businessLogic.SaveFormattedArticles(formattedArticles);
+                    }
+
                     _logger.LogInformation(
                         "Worker ExecuteAsync method executed successfully at: {time}",
                         DateTimeOffset.Now);

@@ -5,10 +5,13 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using GOWI.AIArticleGenerator.DomainLayer.DTOs;
     using GOWI.AIArticleGenerator.ServiceLayer.Helper_classes;
 
     public interface IBusinessLogic
     {
         Task<List<Choice>> GetArticles();
+
+        void SaveFormattedArticles(List<DTOArticle> articles);
     }
 }

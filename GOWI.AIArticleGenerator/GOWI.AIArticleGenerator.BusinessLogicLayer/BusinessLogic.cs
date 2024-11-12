@@ -41,7 +41,6 @@
                     "Article full description:\r\n" +
                     "For this article creation use provided data only!";
 
-
                 _dataAccess = new DataAccess(_dataAccessLogger);
                 _openAIService = new OpenAIService(_httpClientFactory,
                                     _serviceLayerlogger);
@@ -127,6 +126,24 @@
             }
 
             return await Task.FromResult(formattedArticles);
+        }
+
+        public void SaveFormattedArticles(List<DTOArticle> articles)
+        {
+            try
+            {
+                _dataAccess = new DataAccess(_dataAccessLogger);
+                _dataAccess.SaveFormattedArticles(articles);
+
+                _logger.LogInformation("BusinessLogic SaveFormattedArticles method executed " +
+                        "successfully at: {time}", DateTimeOffset.Now);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError("Error happened inside of BusinessLogic SaveFormattedArticles method at: {time}." +
+                    "Error message: {error}", DateTimeOffset.Now, ex.Message);
+            }
         }
     }
 }

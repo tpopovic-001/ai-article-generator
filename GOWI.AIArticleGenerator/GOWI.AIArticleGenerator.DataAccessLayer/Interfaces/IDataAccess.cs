@@ -11,5 +11,7 @@
     public interface IDataAccess
     {
         Task<List<DTOTransaction>> GetTransactions();
+
+        void SaveFormattedArticles(List<DTOArticle> articles);
     }
 }

@@ -62,7 +62,8 @@
                                               TrancheValue = temp.transaction.Value,
                                               CompanyName = company.Name,
                                           }
-                                         ).ToList();
+                                         ).Take(5).ToList();
+
                     _logger.LogInformation("DataAccess GetTransactions method executed " +
                                             "successfully at: {time}", DateTimeOffset.Now);
                 }
@@ -84,7 +85,9 @@
                 using (var connection = new DevAfjPp18032024Context())
                 {
                     await connection.ArticlesTeodorPopovics.AddRangeAsync(mappedArticles);
+                    await connection.SaveChangesAsync();
                 }
+
 
                 _logger.LogInformation("DataAccess SaveFormattedArticles method executed " +
                         "successfully at: {time}", DateTimeOffset.Now);
@@ -93,7 +96,6 @@
             {
                 _logger.LogError("Error happened inside of DataAccess SaveFormattedArticles method at: {time}." +
                 "Error message: {error}", DateTimeOffset.Now, ex.Message);
-
             }
         }
     }
