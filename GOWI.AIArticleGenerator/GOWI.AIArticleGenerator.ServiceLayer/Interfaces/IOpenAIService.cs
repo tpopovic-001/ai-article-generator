@@ -11,6 +11,6 @@
 
     public interface IOpenAIService
     {
-        Task<APIResponse> GenerateArticle(string prompt, DTOTransaction transaction);
+        Task<APIResponse> GenerateArticlesAsync(string prompt, DTOTransaction transaction);
     }
 }

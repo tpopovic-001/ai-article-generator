@@ -10,8 +10,8 @@
 
     public interface IDataAccess
     {
-        Task<List<DTOTransaction>> GetTransactions();
+        Task<List<DTOTransaction>> GetTransactionsAsync();
 
-        void SaveFormattedArticles(List<DTOArticle> articles);
+        Task SaveFormattedArticlesAsync(List<DTOArticle> articles);
     }
 }

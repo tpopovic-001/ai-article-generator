@@ -55,13 +55,14 @@ namespace GOWI.AIArticleGenerator.BackgroundTask
                 try
                 {
                     var generatedArticles = await _businessLogic.
-                                                            GetArticles();
+                                                            GetArticlesAsync();
 
-                    var formattedArticles = await _businessLogic.
-                                                       FormatArticles(generatedArticles);
+                    var formattedArticles = _businessLogic.
+                                          FormatArticles(generatedArticles);
+
                     if (formattedArticles.Count != 0)
                     {
-                        _businessLogic.SaveFormattedArticles(formattedArticles);
+                        _businessLogic.SaveFormattedArticlesAsync(formattedArticles);
                     }
 
                     _logger.LogInformation(

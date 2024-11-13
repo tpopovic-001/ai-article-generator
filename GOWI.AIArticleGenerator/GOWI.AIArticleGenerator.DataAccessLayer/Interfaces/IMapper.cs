@@ -10,9 +10,9 @@
 
     public interface IMapper
     {
-        Task<ArticlesTeodorPopovic> MapFromDTOToEntity(DTOArticle dTOArticle);
+        ArticlesTeodorPopovic MapFromDTOToEntity(DTOArticle dTOArticle);
 
-        Task<List<ArticlesTeodorPopovic>> MapFromDTOToEntity(List<DTOArticle> dTOArticles);
+        List<ArticlesTeodorPopovic> MapFromDTOToEntity(List<DTOArticle> dTOArticles);
 
     }
 }

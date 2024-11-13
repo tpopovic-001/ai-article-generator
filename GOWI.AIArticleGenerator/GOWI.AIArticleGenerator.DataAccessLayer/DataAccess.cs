@@ -9,6 +9,7 @@
     using GOWI.AIArticleGenerator.BackgroundTask.Entities.Context;
     using GOWI.AIArticleGenerator.DataAccessLayer.Interfaces;
     using GOWI.AIArticleGenerator.DomainLayer.DTOs;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
 
     public class DataAccess : IDataAccess
@@ -22,16 +23,17 @@
             _mapper = Mapper.MapperInstance;
         }
 
-        public async Task<List<DTOTransaction>> GetTransactions()
+        public async Task<List<DTOTransaction>> GetTransactionsAsync()
         {
-            var transactions = new List<DTOTransaction>();
+            List<DTOTransaction> transactions = new List<DTOTransaction>();
+
             try
             {
                 var valueCheck = Convert.ToDecimal(0.00000);
 
                 using (var context = new DevAfjPp18032024Context())
                 {
-                    transactions = context.Transactions
+                    var query = context.Transactions
                                      .Where(w => !w.Name.Contains("Test") && w.Value != valueCheck)
                                      .Join(context.Tranches,
                                             transaction => transaction.TransactionId,
@@ -61,26 +63,28 @@
                                               TrancheName = temp.tranche.Name,
                                               TrancheValue = temp.transaction.Value,
                                               CompanyName = company.Name,
-                                          }
-                                         ).Take(5).ToList();
+                                          });
 
-                    _logger.LogInformation("DataAccess GetTransactions method executed " +
+                    transactions = await query.ToListAsync();
+
+                    _logger.LogInformation("DataAccess GetTransactionsAsync method executed " +
                                             "successfully at: {time}", DateTimeOffset.Now);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error happened inside of DataAccess GetTransactions method at: {time}." +
+                _logger.LogError("Error happened inside of DataAccess GetTransactionsAsync method at: {time}." +
                 "Error message: {error}", DateTimeOffset.Now, ex.Message);
             }
-            return await Task.FromResult(transactions);
+
+            return transactions;
         }
 
-        public async void SaveFormattedArticles(List<DTOArticle> articles)
+        public async Task SaveFormattedArticlesAsync(List<DTOArticle> articles)
         {
             try
             {
-                var mappedArticles = await _mapper.MapFromDTOToEntity(articles);
+                var mappedArticles = _mapper.MapFromDTOToEntity(articles);
 
                 using (var connection = new DevAfjPp18032024Context())
                 {
@@ -88,13 +92,12 @@
                     await connection.SaveChangesAsync();
                 }
 
-
-                _logger.LogInformation("DataAccess SaveFormattedArticles method executed " +
+                _logger.LogInformation("DataAccess SaveFormattedArticlesAsync method executed " +
                         "successfully at: {time}", DateTimeOffset.Now);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error happened inside of DataAccess SaveFormattedArticles method at: {time}." +
+                _logger.LogError("Error happened inside of DataAccess SaveFormattedArticlesAsync method at: {time}." +
                 "Error message: {error}", DateTimeOffset.Now, ex.Message);
             }
         }

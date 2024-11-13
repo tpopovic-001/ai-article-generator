@@ -29,7 +29,7 @@
             _converter = Converter.ConverterInstance;
         }
 
-        public async Task<APIResponse> GenerateArticle(string prompt, DTOTransaction transaction)
+        public async Task<APIResponse> GenerateArticlesAsync(string prompt, DTOTransaction transaction)
         {
             try
             {
@@ -57,18 +57,18 @@
                 _generatedArticle = _converter.DeserializeJSON(jsonResponse);
 
                 _logger.LogInformation(
-                    "OpenAIService GenerateArticles method executed successfully at: {time}",
+                    "OpenAIService GenerateArticlesAsync method executed successfully at: {time}",
                     DateTimeOffset.Now);
             }
             catch (Exception ex)
             {
                 _logger.LogError(
-                "Error happened inside of OpenAIService GenerateArticles method at: {time}. " +
+                "Error happened inside of OpenAIService GenerateArticlesAsync method at: {time}. " +
                 "Error message: {error}",
                 DateTimeOffset.Now, ex.Message);
             }
 
-            return await Task.FromResult(_generatedArticle);
+            return _generatedArticle;
         }
     }
 }

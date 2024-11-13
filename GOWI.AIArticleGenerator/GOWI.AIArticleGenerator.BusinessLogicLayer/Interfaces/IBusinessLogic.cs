@@ -10,8 +10,10 @@
 
     public interface IBusinessLogic
     {
-        Task<List<Choice>> GetArticles();
+        Task<List<Choice>> GetArticlesAsync();
 
-        void SaveFormattedArticles(List<DTOArticle> articles);
+        List<DTOArticle> FormatArticles(List<Choice> articles);
+
+        Task SaveFormattedArticlesAsync(List<DTOArticle> articles);
     }
 }

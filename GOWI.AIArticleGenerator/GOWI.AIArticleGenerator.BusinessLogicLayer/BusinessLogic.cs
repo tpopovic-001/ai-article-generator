@@ -31,7 +31,7 @@
             _httpClientFactory = clientFactory;
         }
 
-        public async Task<List<Choice>> GetArticles()
+        public async Task<List<Choice>> GetArticlesAsync()
         {
             try
             {
@@ -45,17 +45,21 @@
                 _openAIService = new OpenAIService(_httpClientFactory,
                                     _serviceLayerlogger);
 
-                var transactions = await _dataAccess.GetTransactions();
+                var transactions = await _dataAccess.GetTransactionsAsync();
                 _generatedArticles = new List<Choice>();
 
                 foreach (var transaction in transactions)
                 {
-                    var generatedArticle = await _openAIService.GenerateArticle
+                    var generatedArticle = await _openAIService.GenerateArticlesAsync
                                     (prompt, transaction);
 
                     var articleContent = generatedArticle.Choices
                                                 .Select(s => s.Text)
                                                 .FirstOrDefault();
+
+                    _logger.LogInformation("Generated article:\r\n {article}\r\n" +
+                        "at: {time}", articleContent, DateTimeOffset.Now);
+
                     if (articleContent != null)
                     {
                         var choiceObject = new Choice
@@ -70,19 +74,19 @@
                     }
                 }
 
-                _logger.LogInformation("BusinessLogic GetArticles method executed successfully " +
+                _logger.LogInformation("BusinessLogic GetArticlesAsync method executed successfully " +
                     "at: {time}", DateTimeOffset.Now);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error happened inside of BusinessLogic GetArticles method at: {time}." +
+                _logger.LogError("Error happened inside of BusinessLogic GetArticlesAsync method at: {time}." +
                                 "Error message: {error}", DateTimeOffset.Now, ex.Message);
             }
 
-            return await Task.FromResult(_generatedArticles);
+            return _generatedArticles;
         }
 
-        public async Task<List<DTOArticle>> FormatArticles(List<Choice> articles)
+        public List<DTOArticle> FormatArticles(List<Choice> articles)
         {
             var titlePattern = @"(?<=Article title:)(.*?)(?=\n)";
             var shortDescriptionPattern = @"(?<=Article short description:)(.*?)(?=\n)";
@@ -108,6 +112,7 @@
                                                         fullDescriptionPattern).Value,
                             TransactionId = article.TransactionId,
                         };
+
                         formattedArticles.Add(formattedArticle);
                     }
                     else
@@ -125,23 +130,23 @@
                 "Error message: {error}", DateTimeOffset.Now, ex.Message);
             }
 
-            return await Task.FromResult(formattedArticles);
+            return formattedArticles;
         }
 
-        public void SaveFormattedArticles(List<DTOArticle> articles)
+        public async Task SaveFormattedArticlesAsync(List<DTOArticle> articles)
         {
             try
             {
                 _dataAccess = new DataAccess(_dataAccessLogger);
-                _dataAccess.SaveFormattedArticles(articles);
+                await _dataAccess.SaveFormattedArticlesAsync(articles);
 
-                _logger.LogInformation("BusinessLogic SaveFormattedArticles method executed " +
+                _logger.LogInformation("BusinessLogic SaveFormattedArticlesAsync method executed " +
                         "successfully at: {time}", DateTimeOffset.Now);
             }
             catch (Exception ex)
             {
 
-                _logger.LogError("Error happened inside of BusinessLogic SaveFormattedArticles method at: {time}." +
+                _logger.LogError("Error happened inside of BusinessLogic SaveFormattedArticlesAsync method at: {time}." +
                     "Error message: {error}", DateTimeOffset.Now, ex.Message);
             }
         }

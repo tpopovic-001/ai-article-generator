@@ -6,15 +6,15 @@
     using System.Text;
     using System.Threading.Tasks;
     using GOWI.AIArticleGenerator.BackgroundTask.Entities;
-    using GOWI.AIArticleGenerator.DomainLayer.DTOs;
     using GOWI.AIArticleGenerator.DataAccessLayer.Interfaces;
+    using GOWI.AIArticleGenerator.DomainLayer.DTOs;
 
     public class Mapper : IMapper
     {
         public static Mapper _mapper;
 
         public static Mapper MapperInstance
-            {
+        {
             get
             {
                 if (_mapper == null)
@@ -26,7 +26,7 @@
             }
         }
 
-        public async Task<ArticlesTeodorPopovic> MapFromDTOToEntity(DTOArticle dTOArticle)
+        public ArticlesTeodorPopovic MapFromDTOToEntity(DTOArticle dTOArticle)
         {
             ArticlesTeodorPopovic entityArticle = new ArticlesTeodorPopovic();
             entityArticle.ArticleId = dTOArticle.ArticleId;
@@ -35,20 +35,20 @@
             entityArticle.FullDescription = dTOArticle.FullDescription;
             entityArticle.TransactionId = dTOArticle.TransactionId;
 
-            return await Task.FromResult(entityArticle);
+            return entityArticle;
         }
 
-        public async Task<List<ArticlesTeodorPopovic>> MapFromDTOToEntity(List<DTOArticle> dTOArticles)
+        public List<ArticlesTeodorPopovic> MapFromDTOToEntity(List<DTOArticle> dTOArticles)
         {
             List<ArticlesTeodorPopovic> entityArticleList = new List<ArticlesTeodorPopovic>();
 
             foreach (DTOArticle article in dTOArticles)
             {
-                var mappedDtoObject = await MapFromDTOToEntity(article);
+                var mappedDtoObject = MapFromDTOToEntity(article);
                 entityArticleList.Add(mappedDtoObject);
             }
 
-            return await Task.FromResult(entityArticleList);
+            return entityArticleList;
         }
      }
 }

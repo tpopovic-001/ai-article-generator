@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GOWI.AIArticleGenerator.Bus
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GOWI.AIArticleGenerator.ServiceLayer", "GOWI.AIArticleGenerator.ServiceLayer\GOWI.AIArticleGenerator.ServiceLayer.csproj", "{823594DC-FEE2-4758-9E42-01D931D94FF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GOWI.AIArticleGenerator.DomainLayer", "GOWI.AIArticleGenerator.DomainLayer\GOWI.AIArticleGenerator.DomainLayer.csproj", "{06167D80-6EFB-4E90-86B1-E349356073FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GOWI.AIArticleGenerator.DomainLayer", "GOWI.AIArticleGenerator.DomainLayer\GOWI.AIArticleGenerator.DomainLayer.csproj", "{06167D80-6EFB-4E90-86B1-E349356073FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GOWI.AIArticleGenerator.BackgroundTask.TestingLayer", "GOWI.AIArticleGenerator.BackgroundTask.TestingLayer\GOWI.AIArticleGenerator.BackgroundTask.TestingLayer.csproj", "{2733F0D5-1B6C-4419-B50C-7C5DEE41206D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{06167D80-6EFB-4E90-86B1-E349356073FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06167D80-6EFB-4E90-86B1-E349356073FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06167D80-6EFB-4E90-86B1-E349356073FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2733F0D5-1B6C-4419-B50C-7C5DEE41206D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2733F0D5-1B6C-4419-B50C-7C5DEE41206D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2733F0D5-1B6C-4419-B50C-7C5DEE41206D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2733F0D5-1B6C-4419-B50C-7C5DEE41206D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
