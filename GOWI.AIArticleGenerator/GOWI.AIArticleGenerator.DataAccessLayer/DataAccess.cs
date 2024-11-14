@@ -16,6 +16,7 @@
     {
         private readonly ILogger<DataAccess> _logger;
         private readonly Mapper _mapper;
+        private readonly IDataAccess _iDataAccess;
 
         public DataAccess(ILogger<DataAccess> logger)
         {
