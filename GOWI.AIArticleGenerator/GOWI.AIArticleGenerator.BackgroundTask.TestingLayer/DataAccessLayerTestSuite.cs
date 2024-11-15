@@ -1,4 +1,4 @@
-﻿namespace GOWI.AIArticleGenerator.BackgroundTask.TestingLayer.DataAccessLayer.UnitTesting
+﻿namespace GOWI.AIArticleGenerator.BackgroundTask.TestingLayer
 {
     using GOWI.AIArticleGenerator.DataAccessLayer.Interfaces;
     using System;
@@ -12,7 +12,7 @@
     using GOWI.AIArticleGenerator.DataAccessLayer;
 
     [TestFixture]
-    public class DataAccessLayerTest
+    public class DataAccessLayerTestSuite
     {
         private Mock<IDataAccess> _mockDataAccess;
 
@@ -31,7 +31,7 @@
         [Test]
         public async Task GetTransactionsAsyncTest()
         {
-            // Setup 
+            // Arrange
             var firstTransaction = new DTOTransaction
             {
                 TransactionId = 1,
@@ -39,10 +39,10 @@
                 Value = Convert.ToDecimal(460.0000),
                 Description = "Just testing a method for fetching database data",
                 DraftedOn = DateTime.Now,
-                SelectedCurrency= "USD",
+                SelectedCurrency = "USD",
                 TrancheName = "SecondTransactionTrancheName",
                 TrancheValue = Convert.ToDecimal(460.0000),
-                CompanyName="Lufthansa",
+                CompanyName = "Lufthansa",
             };
 
             var secondTransaction = new DTOTransaction
@@ -70,13 +70,13 @@
 
             // Assert
             Assert.That(actualResult, Is.Not.Null);
-            Assert.That(actualResult,Is.EqualTo(expectedResult));
+            Assert.That(actualResult, Is.EqualTo(expectedResult));
         }
 
         [Test]
         public async Task SaveFormattedArticlesAsyncTest()
         {
-            // Setup
+            // Arrange
             var firstArticle = new DTOArticle
             {
                 ArticleId = 1,
@@ -104,7 +104,7 @@
             await _mockDataAccess.Object.SaveFormattedArticlesAsync(articles);
 
             //Assert
-            _mockDataAccess.Verify(method => method.SaveFormattedArticlesAsync(articles),Times.AtLeastOnce);
+            _mockDataAccess.Verify(method => method.SaveFormattedArticlesAsync(articles), Times.AtLeastOnce);
 
         }
     }

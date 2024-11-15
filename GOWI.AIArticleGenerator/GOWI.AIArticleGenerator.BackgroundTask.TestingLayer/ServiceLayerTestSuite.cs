@@ -1,4 +1,4 @@
-﻿namespace GOWI.AIArticleGenerator.BackgroundTask.TestingLayer.ServiceLayer.UnitTesting
+﻿namespace GOWI.AIArticleGenerator.BackgroundTask.TestingLayer
 {
     using System;
     using System.Collections.Generic;
@@ -13,7 +13,7 @@
     using NUnit.Framework;
 
     [TestFixture]
-    public class ServiceLayerTest
+    public class ServiceLayerTestSuite
     {
         private Mock<IOpenAIService> _mockOpenAIService;
         private Mock<IConverter> _mockConverter;
@@ -26,7 +26,7 @@
         }
 
         [TearDown]
-        public void TearDown() 
+        public void TearDown()
         {
             _mockOpenAIService = null;
             _mockConverter = null;
@@ -35,7 +35,7 @@
         [Test]
         public async Task GenerateArticlesAsyncTest()
         {
-            // Setup
+            // Arrange
             string prompt = "Always create an article in this format:" +
                             "\r\n Article title \r\n" +
                             "Article short description: \r\n" +
@@ -56,7 +56,7 @@
             };
 
             // Act
-            var actualResult = await _mockOpenAIService.Object.GenerateArticlesAsync(prompt,transaction);
+            var actualResult = await _mockOpenAIService.Object.GenerateArticlesAsync(prompt, transaction);
 
             // Assert
             _mockOpenAIService.Verify(method => method.GenerateArticlesAsync(prompt, transaction), Times.AtLeastOnce);
@@ -66,7 +66,7 @@
         [Test]
         public void SerializeToJSONTest()
         {
-            // Setup
+            // Arrange
             var transaction = new DTOTransaction
             {
                 TransactionId = 1,
@@ -80,22 +80,27 @@
                 CompanyName = "Japan Airlines",
             };
 
+            _mockConverter.Setup(serializedObject => serializedObject.SerializeToJSON(transaction))
+                    .Returns((DTOTransaction transaction) => JsonSerializer.Serialize(transaction));
+
             // Act
             var actualResult = _mockConverter.Object.SerializeToJSON(transaction);
 
             // Assert
             _mockConverter.Verify(method => method.SerializeToJSON(transaction), Times.AtLeastOnce);
+            Assert.That(actualResult, Is.Not.Null);
+            Assert.IsInstanceOf<string>(actualResult);
         }
 
         [Test]
-        public void DeserializeToJSONTest() 
+        public void DeserializeToJSONTest()
         {
-            // Setup
+            // Arrange
             var response = new APIResponse
             {
                 Id = "12345",
                 Object = "someObject",
-                Created = 1672531200, 
+                Created = 1672531200,
                 Model = "gpt-4",
                 Choices = new List<Choice>
                 {
@@ -103,26 +108,31 @@
                     {
                         Text = "Option 1",
                         Index = 0,
-                        Logprobs = null, 
+                        Logprobs = null,
                         FinishReason = "stop"
                     },
                     new Choice
                     {
                         Text = "Option 2",
                         Index = 1,
-                        Logprobs = null,  
-                        FinishReason = "length",                        
+                        Logprobs = null,
+                        FinishReason = "length",
                     }
                 }
             };
 
-            var jsonString = JsonSerializer.Serialize(response);
+            var jsonResponse = JsonSerializer.Serialize(response);
+
+            _mockConverter.Setup(deserializedObject => deserializedObject.DeserializeJSON(jsonResponse))
+                    .Returns((string jsonResponse) => JsonSerializer.Deserialize<APIResponse>(jsonResponse));
 
             // Act
-            var actualResult = _mockConverter.Object.DeserializeJSON(jsonString);
+            var actualResult = _mockConverter.Object.DeserializeJSON(jsonResponse);
 
             // Assert            
-            _mockConverter.Verify(method => method.DeserializeJSON(jsonString), Times.AtLeastOnce);
+            _mockConverter.Verify(method => method.DeserializeJSON(jsonResponse), Times.AtLeastOnce);
+            Assert.That(actualResult, Is.Not.Null);
+            Assert.IsInstanceOf<APIResponse>(actualResult);
         }
     }
 }
